@@ -1,0 +1,69 @@
+{
+	"$schema": "https://www.raycast.com/schemas/extension.json",
+	"name": "commit-message-creator",
+	"title": "Commit Message Creator",
+	"description": "Create commit message based on Jira issue",
+	"icon": "extension-icon.png",
+	"author": "sergey_margelov",
+	"categories": [
+		"Developer Tools"
+	],
+	"license": "MIT",
+	"commands": [
+		{
+			"name": "create-commit",
+			"title": "Create Commit",
+			"description": "Create commit message based on Jira issue",
+			"mode": "view"
+		}
+	],
+	"dependencies": {
+		"@raycast/api": "^1.93.2",
+		"@raycast/utils": "^1.17.0",
+		"@types/jira-client": "^7.1.9",
+		"adf-to-md": "^1.2.1",
+		"node-fetch": "^3.3.2"
+	},
+	"devDependencies": {
+		"@raycast/eslint-config": "^1.0.11",
+		"@types/node": "20.8.10",
+		"@types/react": "18.3.3",
+		"eslint": "^8.57.0",
+		"prettier": "^3.3.3",
+		"typescript": "^5.4.5"
+	},
+	"preferences": [
+		{
+			"name": "jiraToken",
+			"type": "password",
+			"required": true,
+			"description": "Jira token for authentication. You can create a token in your Jira account settings.",
+			"placeholder": "Enter your Jira token",
+			"title": "Jira Token"
+		},
+		{
+			"name": "jiraEmail",
+			"type": "textfield",
+			"required": true,
+			"description": "Jira email for authentication. You can find it in your Jira account settings.",
+			"placeholder": "Enter your Jira email",
+			"title": "Jira Email"
+		},
+		{
+			"name": "jiraUrl",
+			"type": "textfield",
+			"required": true,
+			"description": "Jira URL for authentication. You can find it in your Jira account settings.",
+			"placeholder": "Enter your Jira URL",
+			"title": "Jira URL"
+		}
+	],
+	"scripts": {
+		"build": "ray build",
+		"dev": "ray develop",
+		"fix-lint": "ray lint --fix",
+		"lint": "ray lint",
+		"prepublishOnly": "echo \"\\n\\nIt seems like you are trying to publish the Raycast extension to npm.\\n\\nIf you did intend to publish it to npm, remove the \\`prepublishOnly\\` script and rerun \\`npm publish\\` again.\\nIf you wanted to publish it to the Raycast Store instead, use \\`npm run publish\\` instead.\\n\\n\" && exit 1",
+		"publish": "npx @raycast/api@latest publish"
+	}
+}
