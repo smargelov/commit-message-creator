@@ -1,41 +1,73 @@
-import { Detail, ActionPanel, Action } from '@raycast/api'
-import { useState, useEffect } from 'react'
+import { Detail, ActionPanel, Action, Form, useNavigation } from '@raycast/api'
+import { withAccessToken } from '@raycast/utils'
+import { useState } from 'react'
 import { getTaskDescription } from './api/jira'
 import { convertADFToMarkdown } from './utils/adf-to-md'
-// import { useAI } from '@raycast/utils'
+import { jira } from './auth/jira'
 
-export default function Command() {
-	const [sourceDescription, setSourceDescription] = useState('')
-	const [description, setDescription] = useState('')
-	const [isLoading, setIsLoading] = useState(true)
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				setIsLoading(true)
-				const { title, body } = await getTaskDescription('MD-1408')
-				const text = `# ${title}\n\n${convertADFToMarkdown(body).result}`
-				setSourceDescription(JSON.stringify(body))
-
-				setDescription(text)
-			} catch (error) {
-				console.error('Error fetching task description:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-		fetchData().then()
-	}, [])
-	// const { data, isLoading } = useAI('Suggest 5 jazz songs')
-
-	return (
-		<Detail
-			isLoading={isLoading}
-			markdown={description}
-			actions={
-				<ActionPanel>
-					<Action.CopyToClipboard title="Copy" content={sourceDescription} />
-				</ActionPanel>
-			}
-		/>
-	)
+interface ADFNode {
+  type: string
+  content?: ADFNode[]
+  text?: string
+  attrs?: Record<string, unknown>
 }
+
+interface ADFDocument extends ADFNode {
+  type: 'doc'
+  version: number
+}
+
+interface TaskFormValues {
+  taskNumber: string
+}
+
+function TaskForm() {
+  const { push } = useNavigation()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleSubmit = async (values: TaskFormValues) => {
+    try {
+      setIsLoading(true)
+      const { title, body } = await getTaskDescription(values.taskNumber)
+      const adfDocument = body as unknown as ADFDocument
+      const text = `# ${title}\n\n${convertADFToMarkdown(adfDocument).result}`
+      const sourceDescription = JSON.stringify(body)
+
+      push(
+        <Detail
+          markdown={text}
+          actions={
+            <ActionPanel>
+              <Action.CopyToClipboard title="Copy to Clipboard" content={sourceDescription} />
+              <Action title="Back to Form" onAction={() => push(<TaskForm />)} />
+            </ActionPanel>
+          }
+        />,
+      )
+    } catch (error) {
+      console.error('Error fetching task description:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Form
+      isLoading={isLoading}
+      actions={
+        <ActionPanel>
+          <Action.SubmitForm title="Get Task Description" onSubmit={handleSubmit} />
+        </ActionPanel>
+      }
+    >
+      <Form.TextField
+        id="taskNumber"
+        title="Jira Task Number"
+        placeholder="Enter task number (e.g. MD-1408)"
+        autoFocus
+      />
+    </Form>
+  )
+}
+
+export default withAccessToken(jira)(TaskForm)

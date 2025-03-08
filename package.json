@@ -34,28 +34,20 @@
 	},
 	"preferences": [
 		{
-			"name": "jiraToken",
-			"type": "password",
-			"required": true,
-			"description": "Jira token for authentication. You can create a token in your Jira account settings.",
-			"placeholder": "Enter your Jira token",
-			"title": "Jira Token"
+			"name": "taskRpefix",
+			"type": "textfield",
+			"required": false,
+			"description": "Jira task prefix. For example: 'TASK' for TASK-1234.",
+			"placeholder": "Enter Jira task prefix",
+			"title": "Jira Task Prefix"
 		},
 		{
-			"name": "jiraEmail",
-			"type": "textfield",
-			"required": true,
-			"description": "Jira email for authentication. You can find it in your Jira account settings.",
-			"placeholder": "Enter your Jira email",
-			"title": "Jira Email"
-		},
-		{
-			"name": "jiraUrl",
-			"type": "textfield",
-			"required": true,
-			"description": "Jira URL for authentication. You can find it in your Jira account settings.",
-			"placeholder": "Enter your Jira URL",
-			"title": "Jira URL"
+			"name": "projectDirectory",
+			"type": "directory",
+			"required": false,
+			"description": "Local project directory. For example: '/Users/user-name/projects/my-project'.",
+			"placeholder": "Enter local project directory",
+			"title": "Local Project Directory"
 		}
 	],
 	"scripts": {
