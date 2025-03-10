@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 import JiraApi from 'jira-client'
-import { getJiraCredentials } from '../auth/jira'
+import { getJiraCredentials } from '../model/auth'
 
 interface TaskResponse {
   fields: {

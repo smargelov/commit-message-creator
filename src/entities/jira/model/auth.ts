@@ -15,7 +15,7 @@ interface JiraCredentials {
   myself: User
 }
 
-export const jira = OAuthService.jira({
+const jira = OAuthService.jira({
   clientId: 'NAeIO0L9UVdGqKj5YF32HhcysfBCP31P',
   authorizeUrl: 'https://jira.oauth.raycast.com/authorize',
   tokenUrl: 'https://jira.oauth.raycast.com/token',
@@ -56,10 +56,12 @@ export const jira = OAuthService.jira({
 
 let jiraCredentials: JiraCredentials | null = null
 
-export function getJiraCredentials() {
+function getJiraCredentials() {
   if (!jiraCredentials) {
     throw new Error('getJiraCredentials must be called after the user has authorized the app')
   }
 
   return jiraCredentials
 }
+
+export { getJiraCredentials, jira }

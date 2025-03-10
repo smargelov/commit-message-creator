@@ -11,7 +11,7 @@
 	"license": "MIT",
 	"commands": [
 		{
-			"name": "create-commit",
+			"name": "main",
 			"title": "Create Commit",
 			"description": "Create commit message based on Jira issue",
 			"mode": "view"
@@ -34,7 +34,24 @@
 	},
 	"preferences": [
 		{
-			"name": "taskRpefix",
+			"name": "projectDirectory",
+			"type": "directory",
+			"required": true,
+			"description": "Local project directory. For example: '/Users/user-name/projects/my-project'.",
+			"placeholder": "Enter local project directory",
+			"title": "Local Project Directory"
+		},
+		{
+			"name": "isUseJira",
+			"type": "checkbox",
+			"label": "Would you like to use Jira?",
+			"required": true,
+			"title": "Jira Integration",
+			"default": false,
+			"description": "You can use Jira to create commit messages based on Jira issues."
+		},
+		{
+			"name": "taskPrefix",
 			"type": "textfield",
 			"required": false,
 			"description": "Jira task prefix. For example: 'TASK' for TASK-1234.",
@@ -42,12 +59,13 @@
 			"title": "Jira Task Prefix"
 		},
 		{
-			"name": "projectDirectory",
-			"type": "directory",
+			"name": "gitMainBranch",
+			"type": "textfield",
 			"required": false,
-			"description": "Local project directory. For example: '/Users/user-name/projects/my-project'.",
-			"placeholder": "Enter local project directory",
-			"title": "Local Project Directory"
+			"description": "Git main branch name. For example: 'main' or 'master'.",
+			"placeholder": "Enter git main branch name",
+			"title": "Git Main Branch Name",
+			"default": "main"
 		}
 	],
 	"scripts": {
