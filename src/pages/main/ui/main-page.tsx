@@ -1,65 +1,34 @@
-import { Detail, getPreferenceValues } from '@raycast/api'
-import { useEffect, useState } from 'react'
-import { getCommitsCurrentBranch, getCurrentBranchName, getLastDiff, getPreviousBranchName } from '@/entities/git-data'
+import { Action, ActionPanel, Detail } from '@raycast/api'
 import { MainSidebar } from '@/widgets/main-sidebar'
-
+import { useCommitGenerator } from '@/features/commit-generator'
+import { welcome } from './welcome'
 
 function MainPage() {
-	const [isLoading, setIsLoading] = useState(false)
+  const { commitMessage, isLoading, generateCommitMessage } = useCommitGenerator()
 
-	const [previousBranchName, setPreviousBranchName] = useState('')
-	const [currentBranchName, setCurrentBranchName] = useState('')
-	const [lastDiff, setLastDiff] = useState('')
-	const [commits, setCommits] = useState('')
-
-	const { taskPrefix, projectDirectory } = getPreferenceValues()
-
-	useEffect(() => {
-		const getBranchesName = async () => {
-			try {
-				setIsLoading(true)
-				const branchName = await getCurrentBranchName()
-				setCurrentBranchName(branchName || '')
-				const previousBranchName = await getPreviousBranchName()
-				setPreviousBranchName(previousBranchName || '')
-				const commits = await getCommitsCurrentBranch()
-				setCommits(commits || '')
-				const lastDiff = await getLastDiff()
-				setLastDiff(lastDiff || '')
-			} catch (error) {
-				console.error('Error getting current branch name:', error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-		getBranchesName()
-	}, [])
-
-	return (
-		<Detail
-			isLoading={isLoading}
-			metadata={<MainSidebar />}
-			markdown={`# Jira Task Description Fetcher
-
-  - Task Prefix: ${taskPrefix}
-  - Project Directory: ${projectDirectory}
-  - Current Branch Name: ${currentBranchName}
-  - Previous Branch Name: ${previousBranchName}
-
-  Commits from Current Branch:
-
-\`\`\`bash
-${commits}
-\`\`\`
-
-  Last Diff:
-
-\`\`\`bash
-${lastDiff}
-\`\`\`
-  `}
-		/>
-	)
+  return !commitMessage ? (
+    <Detail
+      actions={
+        <ActionPanel title="Welcome Actions">
+          <Action title="Start commit-message-generation" onAction={() => generateCommitMessage()} />
+        </ActionPanel>
+      }
+      metadata={<MainSidebar />}
+      markdown={`${welcome}`}
+    />
+  ) : (
+    <Detail
+      isLoading={isLoading}
+      markdown={`# Commit message\n\n${commitMessage}`}
+      metadata={<MainSidebar />}
+      actions={
+        <ActionPanel>
+          <Action.CopyToClipboard title="Copy commit message" content={commitMessage} />
+          <Action.Paste title="Paste commit message" content={commitMessage} />
+        </ActionPanel>
+      }
+    />
+  )
 }
 
 export { MainPage }

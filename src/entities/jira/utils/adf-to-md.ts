@@ -1,79 +1,32 @@
 // Determining types for Atlassian Document Format (ADF)
 // JSON-based types of ADF circuits: https://unpkg.com/@atlaskit/adf-schema/dist/json-schema/v1/full.json
 
-interface HeadingAttrs {
-  level: number
-}
-
-interface CardAttrs {
-  url: string
-}
-
-interface CodeBlockAttrs {
-  language?: string
-}
-
-interface EmojiAttrs {
-  shortName: string
-}
-
-interface OrderedListAttrs {
-  order: number
-}
-
-interface LinkAttrs {
-  href: string
-}
-
-interface TaskItemAttrs {
-  localId: string
-  state: 'TODO' | 'DONE'
-}
-
-interface TaskListAttrs {
-  localId: string
-}
-
-type NodeAttrs =
-  | HeadingAttrs
-  | CardAttrs
-  | CodeBlockAttrs
-  | EmojiAttrs
-  | OrderedListAttrs
-  | TaskItemAttrs
-  | TaskListAttrs
-
-type MarkAttrs = LinkAttrs
-
-interface ADFNode {
-  type: string
-  content?: ADFNode[]
-  text?: string
-  marks?: ADFMark[]
-  attrs?: NodeAttrs
-}
-
-interface ADFMark {
-  type: string
-  attrs?: MarkAttrs
-}
-
-interface ADFDocument extends ADFNode {
-  type: 'doc'
-  version: number
-}
-
-interface ConversionResult {
-  result: string
-  warnings: Set<string>
-}
+import {
+  ADFDocument,
+  ADFNode,
+  CardAttrs,
+  CodeBlockAttrs,
+  ConversionResult,
+  EmojiAttrs,
+  HeadingAttrs,
+  LinkAttrs,
+  OrderedListAttrs,
+  TaskItemAttrs,
+} from '../model/types'
 
 /**
  * Converts Atlassian Document Format to Markdown
  * @param adf Atlassian Document Format object
  * @returns Object containing the result markdown string and any warnings
  */
-export function convertADFToMarkdown(adf: ADFDocument): ConversionResult {
+export function convertADFToMarkdown(adf?: ADFDocument): ConversionResult {
+  if (!adf) {
+    return {
+      result: '',
+      warnings: new Set<string>(['adf-is-undefined']),
+    }
+  }
+
   const warnings = new Set<string>()
 
   validateADF(adf)

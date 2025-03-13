@@ -1,1 +1,1 @@
-export { getCurrentBranchName, getPreviousBranchName, getCommitsCurrentBranch, getLastDiff } from './utils/process'
+export { getPreviousBranchName, getCommitsCurrentBranch, getLastDiff, getTaskName } from './utils/process'

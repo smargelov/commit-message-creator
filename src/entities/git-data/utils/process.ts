@@ -2,7 +2,7 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { getPreferenceValues } from '@raycast/api'
 
-const { projectDirectory } = getPreferenceValues()
+const { projectDirectory, taskPrefix } = getPreferenceValues()
 
 const execAsync = promisify(exec)
 
@@ -54,4 +54,17 @@ const getLastDiff = async () => {
   }
 }
 
-export { getCurrentBranchName, getPreviousBranchName, getCommitsCurrentBranch, getLastDiff }
+const getTaskName = async () => {
+	const branchName = await getCurrentBranchName()
+	if (!branchName) {
+		return ''
+	}
+	const regex = new RegExp(`${taskPrefix}-\\d+`)
+	const match = branchName.match(regex)
+	if (match) {
+		return match[0]
+	}
+	return ''
+}
+
+export { getPreviousBranchName, getCommitsCurrentBranch, getLastDiff, getTaskName }

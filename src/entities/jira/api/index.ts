@@ -1,15 +1,16 @@
 import fetch from 'node-fetch'
 import JiraApi from 'jira-client'
 import { getJiraCredentials } from '../model/auth'
+import { ADFDocument, IJiraTaskData } from '../model/types'
 
 interface TaskResponse {
   fields: {
     summary: string
-    description: Record<string, unknown>
+    description: ADFDocument
   }
 }
 
-const getTaskDescription = async (taskNumber: string) => {
+const getTaskDescription = async (taskNumber: string): Promise<IJiraTaskData> => {
   const { cloudId, authorizationHeader } = getJiraCredentials()
   const url = `https://api.atlassian.com/ex/jira/${cloudId}/rest/api/3/issue/${taskNumber}?fields=summary,description`
 
