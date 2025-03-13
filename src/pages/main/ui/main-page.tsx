@@ -8,28 +8,28 @@ function MainPage() {
   const { commitMessage, status, generateCommitMessage } = useCommitGenerator()
   const [text, setText] = useState<string>('')
 
-	useEffect(() => {
-			switch (status) {
-			case 'start':
-				setText('Generating commit message...')
-				break
-			case 'task-number':
-				setText('Getting task number...')
-				break
-			case 'jira-task':
-				setText('Getting Jira task description...')
-				break
-			case 'diff':
-				setText('Getting last diff...')
-				break
-			case 'ai':
-				setText('Generating commit message using AI...')
-				break
-			case 'done':
-				setText(`# Commit message\n\n${commitMessage}`)
-				break
-			}
-	}, [status])
+  useEffect(() => {
+    switch (status) {
+      case 'start':
+        setText('Generating commit message...')
+        break
+      case 'task-number':
+        setText('Getting task number...')
+        break
+      case 'jira-task':
+        setText('Getting Jira task description...')
+        break
+      case 'diff':
+        setText('Getting last diff...')
+        break
+      case 'ai':
+        setText('Generating commit message using AI...')
+        break
+      case 'done':
+        setText(`# Commit message\n\n${commitMessage}`)
+        break
+    }
+  }, [status])
 
   return !text ? (
     <Detail

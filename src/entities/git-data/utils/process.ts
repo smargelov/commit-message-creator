@@ -55,16 +55,16 @@ const getLastDiff = async () => {
 }
 
 const getTaskName = async () => {
-	const branchName = await getCurrentBranchName()
-	if (!branchName) {
-		return ''
-	}
-	const regex = new RegExp(`${taskPrefix}-\\d+`)
-	const match = branchName.match(regex)
-	if (match) {
-		return match[0]
-	}
-	return ''
+  const branchName = await getCurrentBranchName()
+  if (!branchName) {
+    return ''
+  }
+  const regex = new RegExp(`${taskPrefix}-\\d+`)
+  const match = branchName.match(regex)
+  if (match) {
+    return match[0]
+  }
+  return ''
 }
 
 export { getPreviousBranchName, getCommitsCurrentBranch, getLastDiff, getTaskName }

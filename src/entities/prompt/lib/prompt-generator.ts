@@ -52,11 +52,11 @@ ${taskNumber ? '- Include the Jira task number at the end' : ''}
 Please generate only the commit message without any additional explanation.
 	`
 
-export const getPromptText = (diff: string, taskNumber: string, description: string, title?: string  ) => {
-	let promptText = start
-	if (title && description && taskNumber) {
-		promptText += jiraPath(title, description, taskNumber)
-	}
-	promptText += end(diff, taskNumber)
-	return promptText
+export const getPromptText = (diff: string, taskNumber: string, description: string, title?: string) => {
+  let promptText = start
+  if (title && description && taskNumber) {
+    promptText += jiraPath(title, description, taskNumber)
+  }
+  promptText += end(diff, taskNumber)
+  return promptText
 }
