@@ -5,6 +5,7 @@
 	"description": "Create commit message based on Jira issue",
 	"icon": "extension-icon.png",
 	"author": "sergey_margelov",
+	"version": "0.3.0",
 	"categories": [
 		"Developer Tools"
 	],

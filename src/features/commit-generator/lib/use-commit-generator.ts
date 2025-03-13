@@ -6,7 +6,7 @@ import { getPromptText } from '@/entities/prompt'
 
 export const useCommitGenerator = () => {
 	const [commitMessage, setCommitMessage] = useState<string>('')
-	const [isLoading, setIsLoading] = useState<boolean>(false)
+	const [status, setStatus] = useState<string>('ready')
 
 	const { isUseJira } = getPreferenceValues()
 
@@ -16,17 +16,19 @@ export const useCommitGenerator = () => {
 				style: Toast.Style.Animated,
 				title: 'Generating commit message...',
 			})
-			setIsLoading(true)
+			setStatus('start')
 			let taskData: IJiraTaskData | null = null
 			let taskNumber: string = ''
 			if (isUseJira) {
+				setStatus('task-number')
 				taskNumber = await getTaskName()
 				if (taskNumber) {
+					setStatus('jira-task')
 					taskData = await getTaskDescription(taskNumber)
 				}
 			}
-
 			const { result: description } = convertADFToMarkdown(taskData?.body)
+			setStatus('diff')
 			const diff = await getLastDiff()
 
 			if (!diff) {
@@ -35,25 +37,28 @@ export const useCommitGenerator = () => {
 					title: 'No changes detected',
 					message: 'No changes detected in the last commit.',
 				})
+				setStatus('done')
 				setCommitMessage('No changes detected.')
 				return
 			}
 
 			const promptText = getPromptText(diff, taskNumber, description, taskData?.title)
-
 			if (!environment.canAccess(AI)) {
 				showToast({
 					style: Toast.Style.Success,
 					title: 'AI is not available',
 					message: 'You can copy the prompt text',
 				})
+				setStatus('done')
 				setCommitMessage(promptText)
 				return
 			}
+			setStatus('ai')
 			const response = await AI.ask(promptText, {
 				model: AI.Model.Anthropic_Claude_Sonnet
 			})
 
+			setStatus('done')
 			if (response) {
 				setCommitMessage(response)
 				showToast({
@@ -66,11 +71,10 @@ export const useCommitGenerator = () => {
 			}
 
 		} catch (error) {
+			setStatus('done')
 			setCommitMessage('Error generating commit message.')
-		} finally {
-			setIsLoading(false)
 		}
 	}
 
-	return { commitMessage, isLoading, generateCommitMessage }
+	return { commitMessage, status, generateCommitMessage }
 }
